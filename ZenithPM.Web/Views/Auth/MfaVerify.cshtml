@@ -1,0 +1,22 @@
+﻿@{
+    Layout = "_AuthLayout";
+    ViewData["Title"] = "MFA Verification";
+}
+
+<h2 class="text-center" style="font-size:20px; font-weight:600; color:white; margin-bottom:8px;">Two-Factor Authentication</h2>
+<p class="text-center text-muted" style="font-size:14px;">Enter the 6-digit OTP from your authenticator app</p>
+
+<form asp-action="MfaVerify" method="post">
+    <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+    <div class="mb-3">
+        <label class="form-label">OTP Code</label>
+        <input type="text" name="OTPCode" class="form-control" placeholder="123456" maxlength="6" required />
+    </div>
+
+    <button type="submit" class="btn-primary">Verify</button>
+</form>
+
+<div class="text-center mt-3">
+    <a href="/Auth/Login" class="auth-link">Back to Login</a>
+</div>

@@ -1,0 +1,33 @@
+﻿@{
+    Layout = "~/Views/Shared/_LandingLayout.cshtml";
+}
+
+<style>
+    .about-hero {
+        background: #0A1628;
+        color: white;
+        padding: 80px 20px;
+        text-align: center;
+    }
+    .about-hero h1 { font-size: 48px; font-weight: 700; }
+    .about-hero p { font-size: 18px; color: #C8D0DC; margin-top: 12px; }
+    .about-content { padding: 60px 20px; background: white; }
+    .about-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 40px; max-width: 1200px; margin: 0 auto; }
+    .about-grid h3 { color: #0A1628; margin-bottom: 8px; }
+    .about-grid p { color: #4A5568; }
+    @@media (max-width:768px) { .about-grid { grid-template-columns: 1fr; } }
+</style>
+
+<section class="about-hero">
+    <h1>About Zenith PM</h1>
+    <p>Empowering teams to deliver projects with confidence.</p>
+</section>
+
+<section class="about-content">
+    <div class="about-grid">
+        <div><h3>Our Mission</h3><p>Provide enterprise-grade project management tools for teams of all sizes.</p></div>
+        <div><h3>Our Vision</h3><p>Become the most trusted project management platform worldwide.</p></div>
+        <div><h3>Our Values</h3><p>Transparency, collaboration, and innovation in everything we do.</p></div>
+        <div><h3>Our Team</h3><p>Passionate developers and designers building the future of work.</p></div>
+    </div>
+</section>

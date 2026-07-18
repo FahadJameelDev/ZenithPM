@@ -1,0 +1,29 @@
+﻿@{
+    Layout = "~/Views/Shared/_LandingLayout.cshtml";
+}
+
+<style>
+    .features-hero { background: #0A1628; color: white; padding: 80px 20px; text-align: center; }
+    .features-hero h1 { font-size: 48px; font-weight: 700; }
+    .features-hero p { font-size: 18px; color: #C8D0DC; margin-top: 12px; }
+    .features-list { padding: 60px 20px; background: white; }
+    .features-list .container { display: grid; grid-template-columns: repeat(2,1fr); gap: 30px; max-width: 1200px; margin: 0 auto; }
+    .feature-item { background: #F8FAFC; padding: 30px; border-radius: 8px; border-left: 4px solid #2A6DF4; }
+    .feature-item h3 { color: #0A1628; margin-bottom: 6px; }
+    .feature-item p { color: #4A5568; }
+    @@media (max-width:768px) { .features-list .container { grid-template-columns: 1fr; } }
+</style>
+
+<section class="features-hero">
+    <h1>Features</h1>
+    <p>Everything you need to manage projects like a pro.</p>
+</section>
+
+<section class="features-list">
+    <div class="container">
+        <div class="feature-item"><h3>📋 Task Management</h3><p>Create, assign, and track tasks with deadlines.</p></div>
+        <div class="feature-item"><h3>👥 Team Collaboration</h3><p>Real-time communication and file sharing.</p></div>
+        <div class="feature-item"><h3>📊 Analytics Dashboard</h3><p>Visual reports and project insights.</p></div>
+        <div class="feature-item"><h3>🔒 Enterprise Security</h3><p>Role-based access and data encryption.</p></div>
+    </div>
+</section>

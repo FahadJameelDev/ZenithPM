@@ -1,0 +1,231 @@
+﻿@{
+    Layout = "~/Views/Shared/_LandingLayout.cshtml";
+}
+
+<style>
+    /* Hero */
+    .hero {
+        text-align: center;
+        padding: 80px 20px;
+        background: #F4F6F9;
+    }
+    .hero h1 {
+        font-size: 52px;
+        font-weight: 700;
+        color: #0A1628;
+        line-height: 1.2;
+    }
+    .hero h1 span {
+        color: #2A6DF4;
+    }
+    .hero p {
+        font-size: 20px;
+        color: #4A5568;
+        margin-top: 16px;
+    }
+    .hero-buttons {
+        margin-top: 32px;
+        display: flex;
+        gap: 16px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    .btn-primary {
+        background: #2A6DF4;
+        color: white;
+        padding: 14px 36px;
+        border-radius: 8px;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-block;
+        transition: 0.3s;
+    }
+    .btn-primary:hover {
+        background: #1E5AD4;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(42, 109, 244, 0.3);
+    }
+    .btn-outline {
+        background: transparent;
+        color: #0A1628;
+        padding: 14px 36px;
+        border-radius: 8px;
+        font-weight: 600;
+        text-decoration: none;
+        border: 2px solid #0A1628;
+        display: inline-block;
+        transition: 0.3s;
+    }
+    .btn-outline:hover {
+        background: #0A1628;
+        color: white;
+    }
+
+    /* Features */
+    .features {
+        padding: 80px 20px;
+        background: white;
+    }
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 30px;
+        margin-top: 40px;
+    }
+    .feature-card {
+        background: #F8FAFC;
+        padding: 30px 20px;
+        border-radius: 8px;
+        text-align: center;
+        transition: 0.3s;
+        border: 1px solid #E2E8F0;
+    }
+    .feature-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 32px rgba(0,0,0,0.08);
+    }
+    .feature-card i {
+        font-size: 40px;
+        color: #2A6DF4;
+        margin-bottom: 16px;
+    }
+    .feature-card h3 {
+        font-size: 20px;
+        color: #0A1628;
+        margin-bottom: 8px;
+    }
+    .feature-card p {
+        font-size: 15px;
+        color: #4A5568;
+    }
+
+    /* Stats */
+    .stats {
+        padding: 60px 20px;
+        background: #0A1628;
+        color: white;
+        text-align: center;
+    }
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 40px;
+        margin-top: 30px;
+    }
+    .stats-grid h2 {
+        font-size: 44px;
+        font-weight: 700;
+        color: #2A6DF4;
+    }
+    .stats-grid p {
+        font-size: 18px;
+        color: #C8D0DC;
+    }
+
+    /* CTA */
+    .cta {
+        padding: 80px 20px;
+        background: #F4F6F9;
+        text-align: center;
+    }
+    .cta h2 {
+        font-size: 38px;
+        font-weight: 700;
+        color: #0A1628;
+    }
+    .cta p {
+        font-size: 18px;
+        color: #4A5568;
+        margin-top: 12px;
+    }
+    .cta .btn-primary {
+        margin-top: 24px;
+    }
+
+    /* Section Title */
+    .section-title {
+        text-align: center;
+        font-size: 34px;
+        font-weight: 700;
+        color: #0A1628;
+    }
+    .section-subtitle {
+        text-align: center;
+        font-size: 18px;
+        color: #4A5568;
+        margin-top: 8px;
+    }
+
+    /* Responsive */
+    @@media (max-width: 1024px) {
+        .features-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @@media (max-width: 768px) {
+        .hero h1 { font-size: 32px; }
+        .features-grid { grid-template-columns: 1fr; }
+        .stats-grid { grid-template-columns: 1fr; gap: 20px; }
+        .cta h2 { font-size: 28px; }
+        .hero-buttons { flex-direction: column; align-items: center; }
+        .btn-primary, .btn-outline { width: 100%; max-width: 280px; text-align: center; }
+    }
+</style>
+
+<!-- HERO -->
+<section class="hero">
+    <h1>Manage Projects Like <span>a Pro</span></h1>
+    <p>Enterprise Project Management System for modern teams.</p>
+    <div class="hero-buttons">
+        <a href="/Auth/Login" class="btn-primary">Get Started</a>
+        <a href="/Home/Features" class="btn-outline">Learn More</a>
+    </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features">
+    <div class="container">
+        <h2 class="section-title">Why Zenith PM?</h2>
+        <p class="section-subtitle">Everything you need to manage projects efficiently</p>
+        <div class="features-grid">
+            <div class="feature-card">
+                <i class="fas fa-tasks"></i>
+                <h3>Task Management</h3>
+                <p>Create, assign, and track tasks with ease.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-users"></i>
+                <h3>Team Collaboration</h3>
+                <p>Work together with your team in real-time.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-chart-bar"></i>
+                <h3>Analytics & Reports</h3>
+                <p>Get insights with real-time dashboards.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-shield-alt"></i>
+                <h3>Enterprise Security</h3>
+                <p>Role-based access and data protection.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- STATS -->
+<section class="stats">
+    <div class="container">
+        <div class="stats-grid">
+            <div><h2>50+</h2><p>Projects Completed</p></div>
+            <div><h2>100+</h2><p>Active Teams</p></div>
+            <div><h2>98%</h2><p>Client Satisfaction</p></div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="cta">
+    <div class="container">
+        <h2>Ready to Start?</h2>
+        <p>Join thousands of teams using Zenith PM.</p>
+        <a href="/Auth/Register" class="btn-primary">Get Started Free</a>
+    </div>
+</section>

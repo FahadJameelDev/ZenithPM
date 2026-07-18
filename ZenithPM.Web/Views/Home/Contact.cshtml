@@ -1,0 +1,29 @@
+﻿@{
+    Layout = "~/Views/Shared/_LandingLayout.cshtml";
+}
+
+<style>
+    .contact-hero { background: #0A1628; color: white; padding: 80px 20px; text-align: center; }
+    .contact-hero h1 { font-size: 48px; font-weight: 700; }
+    .contact-hero p { font-size: 18px; color: #C8D0DC; margin-top: 12px; }
+    .contact-form { padding: 60px 20px; background: white; }
+    .contact-form .container { max-width: 600px; margin: 0 auto; }
+    .contact-form input, .contact-form textarea { width: 100%; padding: 12px; border: 1px solid #E2E8F0; border-radius: 6px; margin-bottom: 16px; font-family: 'Inter',sans-serif; }
+    .contact-form button { background: #2A6DF4; color: white; padding: 14px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; width: 100%; }
+    .contact-form button:hover { background: #1E5AD4; }
+</style>
+
+<section class="contact-hero">
+    <h1>Contact Us</h1>
+    <p>Have questions? We'd love to hear from you.</p>
+</section>
+
+<section class="contact-form">
+    <div class="container">
+        <input type="text" placeholder="Your Name" />
+        <input type="email" placeholder="Your Email" />
+        <input type="text" placeholder="Subject" />
+        <textarea rows="5" placeholder="Your Message"></textarea>
+        <button>Send Message</button>
+    </div>
+</section>
