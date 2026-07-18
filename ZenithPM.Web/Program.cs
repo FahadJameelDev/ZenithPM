@@ -1,15 +1,17 @@
 using Microsoft.EntityFrameworkCore;
 using ZenithPM.Web.Data;
+using ZenithPM.Web.Services; // Service Layer
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Add services to the container.
 builder.Services.AddControllersWithViews();
 
-// DbContext
+// Database Context Registration
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Session Services
+// Session Services (for MFA, TempData, etc.)
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
@@ -18,8 +20,15 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
+// ***** CUSTOM SERVICE REGISTRATIONS *****
+// Register Auth Service (Business Logic Layer)
+builder.Services.AddScoped<IAuthService, AuthService>();
+// Register HttpContextAccessor (for Session & Request handling in Services)
+builder.Services.AddHttpContextAccessor();
+
 var app = builder.Build();
 
+// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -30,7 +39,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 
-// Session Middleware
+// Use Session Middleware
 app.UseSession();
 
 app.UseAuthorization();
