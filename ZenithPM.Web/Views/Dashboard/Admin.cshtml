@@ -1,0 +1,277 @@
+﻿@model ZenithPM.Web.Models.ViewModels.AdminDashboardViewModel
+@{
+    ViewData["Title"] = "Admin Dashboard";
+
+    Layout = "_Layout";
+}
+
+<!-- Page Header -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h3 fw-bold text-dark mb-1">
+            <i class="fas fa-user-shield text-primary me-2"></i>Admin Dashboard
+        </h1>
+        <p class="text-muted small mb-0">Manage personnel, monitor active projects, and system workflow.</p>
+    </div>
+    <div>
+        <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill">
+            <i class="fas fa-calendar-alt me-1"></i> @DateTime.Now.ToString("dd MMM yyyy")
+        </span>
+    </div>
+</div>
+
+<!-- Stat Cards -->
+<div class="row g-4 mb-4">
+    <div class="col-xl-3 col-lg-6 col-md-6">
+        <div class="stat-card">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <span class="stat-label">Employees</span>
+                    <h2 class="stat-number mt-1">@Model.TotalEmployees</h2>
+                </div>
+                <div class="stat-icon purple">
+                    <i class="fas fa-user-tie"></i>
+                </div>
+            </div>
+            <div class="mt-2">
+                <span class="badge bg-success bg-opacity-10 text-success">
+                    <i class="fas fa-arrow-up me-1"></i>+2
+                </span>
+                <span class="text-muted small ms-1">new hires</span>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-lg-6 col-md-6">
+        <div class="stat-card">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <span class="stat-label">Departments</span>
+                    <h2 class="stat-number mt-1">@Model.TotalDepartments</h2>
+                </div>
+                <div class="stat-icon blue">
+                    <i class="fas fa-sitemap"></i>
+                </div>
+            </div>
+            <div class="mt-2">
+                <span class="badge bg-secondary bg-opacity-10 text-secondary">
+                    <i class="fas fa-minus me-1"></i>Stable
+                </span>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-lg-6 col-md-6">
+        <div class="stat-card">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <span class="stat-label">Projects</span>
+                    <h2 class="stat-number mt-1">@Model.TotalProjects</h2>
+                </div>
+                <div class="stat-icon green">
+                    <i class="fas fa-layer-group"></i>
+                </div>
+            </div>
+            <div class="mt-2">
+                <span class="badge bg-success bg-opacity-10 text-success">
+                    <i class="fas fa-arrow-up me-1"></i>+1
+                </span>
+                <span class="text-muted small ms-1">active</span>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-lg-6 col-md-6">
+        <div class="stat-card">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <span class="stat-label">Pending Tasks</span>
+                    <h2 class="stat-number mt-1">@Model.PendingTasks</h2>
+                </div>
+                <div class="stat-icon orange">
+                    <i class="fas fa-list-check"></i>
+                </div>
+            </div>
+            <div class="mt-2">
+                <span class="badge bg-warning bg-opacity-10 text-warning">
+                    <i class="fas fa-exclamation-circle me-1"></i>Attention needed
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Projects + Employee Stats -->
+<div class="row g-4">
+    <div class="col-lg-7">
+        <div class="glass-card">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-stream text-primary me-2"></i>Recent Projects
+                </h5>
+                <a href="#" class="text-primary text-decoration-none small fw-semibold">View All</a>
+            </div>
+            <div class="table-responsive">
+                <table class="table-custom">
+                    <thead>
+                        <tr>
+                            <th>Project Name</th>
+                            <th>Status</th>
+                            <th class="text-end">Progress</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var project in Model.RecentProjects)
+                        {
+                            var progress = project.Progress > 0 ? project.Progress : 0;
+                            var progressColor = progress >= 75 ? "success" : progress >= 40 ? "warning" : "danger";
+                            <tr>
+                                <td>
+                                    <span class="fw-semibold">@project.Name</span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-1 rounded-pill">
+                                        @project.Status
+                                    </span>
+                                </td>
+                                <td class="text-end">
+                                    <div class="d-flex align-items-center justify-content-end gap-2">
+                                        <div class="progress" style="width:100px;height:6px;border-radius:10px;">
+                                            <div class="progress-bar bg-@progressColor" role="progressbar" style="width:@progress%;border-radius:10px;"></div>
+                                        </div>
+                                        <span class="small fw-semibold text-@progressColor">@progress%</span>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-5">
+        <div class="glass-card" style="background: linear-gradient(145deg, #0B1A33, #142A4A); border-color: rgba(255,255,255,0.06);">
+            <h5 class="card-title text-white mb-3">
+                <i class="fas fa-users-rectangle text-primary me-2"></i>Employee Stats
+            </h5>
+            <div class="row g-3">
+                <div class="col-12">
+                    <div class="bg-white bg-opacity-10 rounded-3 p-3 d-flex justify-content-between align-items-center">
+                        <span class="text-white-50 small text-uppercase">Active</span>
+                        <span class="text-success fw-bold fs-4">@Model.EmployeeStats.Active</span>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="bg-white bg-opacity-10 rounded-3 p-3 d-flex justify-content-between align-items-center">
+                        <span class="text-white-50 small text-uppercase">On Leave</span>
+                        <span class="text-warning fw-bold fs-4">@Model.EmployeeStats.OnLeave</span>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="bg-white bg-opacity-10 rounded-3 p-3 d-flex justify-content-between align-items-center">
+                        <span class="text-white-50 small text-uppercase">Total</span>
+                        <span class="text-white fw-bold fs-4">@Model.EmployeeStats.Total</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="row g-3 mt-2">
+    <div class="col-12">
+        <div class="glass-card d-flex flex-wrap gap-3 align-items-center justify-content-between">
+            <div class="d-flex align-items-center gap-3">
+                <i class="fas fa-bolt text-primary fs-4"></i>
+                <span class="fw-semibold text-dark">Quick Actions</span>
+            </div>
+            <div class="d-flex flex-wrap gap-2">
+                <a href="/Admin/Index" class="btn btn-primary btn-sm rounded-pill px-4">
+                    <i class="fas fa-users-cog me-1"></i>User Management
+                </a>
+                <a href="/Project/Create" class="btn btn-outline-primary btn-sm rounded-pill px-4">
+                    <i class="fas fa-plus me-1"></i>Create Project
+                </a>
+                <a href="/Department/Index" class="btn btn-outline-secondary btn-sm rounded-pill px-4">
+                    <i class="fas fa-building me-1"></i>Departments
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .stat-card {
+        background: white;
+        border-radius: 16px;
+        padding: 24px 20px;
+        border: 1px solid #E5E9F0;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+        transition: all 0.25s ease;
+        height: 100%;
+    }
+    .stat-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 30px rgba(0,0,0,0.06);
+        border-color: #CBD5E1;
+    }
+    .stat-card .stat-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        flex-shrink: 0;
+    }
+    .stat-card .stat-icon.blue { background: #DBEAFE; color: #2563EB; }
+    .stat-card .stat-icon.green { background: #DCFCE7; color: #16A34A; }
+    .stat-card .stat-icon.purple { background: #EDE9FE; color: #7C3AED; }
+    .stat-card .stat-icon.orange { background: #FEF3C7; color: #D97706; }
+    .stat-card .stat-number {
+        font-size: 28px;
+        font-weight: 700;
+        color: #0B1A33;
+        letter-spacing: -0.5px;
+    }
+    .stat-card .stat-label {
+        font-size: 13px;
+        color: #6B7A8F;
+        font-weight: 500;
+    }
+    .glass-card {
+        background: white;
+        border-radius: 16px;
+        padding: 24px 28px;
+        border: 1px solid #E5E9F0;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+        margin-bottom: 0;
+        height: 100%;
+    }
+    .glass-card .card-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: #0B1A33;
+        margin-bottom: 16px;
+    }
+    .table-custom {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+    }
+    .table-custom thead th {
+        background: #F8FAFC;
+        color: #475569;
+        font-weight: 600;
+        padding: 10px 12px;
+        border-bottom: 2px solid #E5E9F0;
+        text-align: left;
+    }
+    .table-custom tbody td {
+        padding: 10px 12px;
+        border-bottom: 1px solid #F1F5F9;
+        color: #1E293B;
+    }
+    .table-custom tbody tr:hover {
+        background: #F8FAFC;
+    }
+</style>

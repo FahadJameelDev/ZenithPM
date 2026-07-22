@@ -20,6 +20,10 @@ namespace ZenithPM.Web.Models.Entities
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
 
+        // Role relationship
+        public int RoleId { get; set; }
+        public Role? Role { get; set; }
+
         // Navigation property
         public ICollection<SecurityLog> SecurityLogs { get; set; } = new List<SecurityLog>();
     }

@@ -1,0 +1,44 @@
+﻿@model ZenithPM.Web.Models.ViewModels.UserManagementViewModel
+
+@{
+    ViewData["Title"] = "User Management";
+    Layout = "_Layout";
+}
+
+<h2>User Management</h2>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model.Users)
+        {
+            <tr>
+                <td>@user.FirstName @user.LastName</td>
+                <td>@user.Email</td>
+                <td>@user.RoleName</td>
+                <td>
+                    <a href="@Url.Action("Edit", new { id = user.Id })" class="btn btn-sm btn-primary">Edit</a>
+                    @if (User.IsInRole("SuperAdmin"))
+                    {
+                        <form asp-action="Delete" method="post" style="display:inline;">
+                            <input type="hidden" name="id" value="@user.Id" />
+                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">Delete</button>
+                        </form>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

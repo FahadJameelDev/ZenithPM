@@ -1,50 +1,795 @@
-﻿<!DOCTYPE html>
-<html lang="en">
+﻿@using System.Security.Claims
+@{
+    var userRole = User.FindFirst(ClaimTypes.Role)?.Value ?? "User";
+    var userName = User.Identity?.Name ?? "User";
+}
+<!DOCTYPE html>
+<html>
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - ZenithPM.Web</title>
-    <script type="importmap"></script>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/ZenithPM.Web.styles.css" asp-append-version="true" />
+    <title>Zenith PM - @ViewData["Title"]</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        :root {
+            --sidebar-width: 260px;
+            --topbar-height: 70px;
+            --primary: #1A56DB;
+            --primary-light: #E8EEFD;
+            --bg-body: #F0F2F5;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-body);
+            color: #1E293B;
+            overflow-x: hidden;
+        }
+
+        /* ========== SIDEBAR ========== */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: var(--sidebar-width);
+            height: 100vh;
+            background: linear-gradient(180deg, #0B1A33 0%, #0F2847 100%);
+            z-index: 1050;
+            overflow-y: auto;
+            transition: all 0.3s ease;
+            border-right: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .sidebar-brand {
+            padding: 24px 24px 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .sidebar-brand h3 {
+            color: white;
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            margin: 0;
+        }
+
+        .sidebar-brand h3 span {
+            color: #3B82F6;
+        }
+
+        .sidebar-brand small {
+            color: rgba(255,255,255,0.35);
+            font-size: 10px;
+            font-weight: 400;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            display: block;
+            margin-top: 4px;
+        }
+
+        .sidebar-nav {
+            list-style: none;
+            padding: 16px 12px;
+            margin: 0;
+        }
+
+        .sidebar-nav .nav-item {
+            margin-bottom: 2px;
+        }
+
+        .sidebar-nav .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 10px 16px;
+            border-radius: 10px;
+            color: rgba(255,255,255,0.55);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .sidebar-nav .nav-link i {
+            width: 20px;
+            font-size: 16px;
+            text-align: center;
+            flex-shrink: 0;
+            transition: all 0.3s;
+        }
+
+        .sidebar-nav .nav-link:hover {
+            background: rgba(255,255,255,0.07);
+            color: white;
+            border-left-color: #3B82F6;
+        }
+
+        .sidebar-nav .nav-link:hover i {
+            color: #3B82F6;
+            transform: scale(1.05);
+        }
+
+        .sidebar-nav .nav-link.active {
+            background: rgba(59, 130, 246, 0.12);
+            color: white;
+            border-left-color: #3B82F6;
+        }
+
+        .sidebar-nav .nav-divider {
+            height: 1px;
+            background: rgba(255,255,255,0.06);
+            margin: 12px 16px;
+        }
+
+        .sidebar-nav .nav-link.logout {
+            color: #EF4444;
+        }
+
+        .sidebar-nav .nav-link.logout:hover {
+            background: rgba(239, 68, 68, 0.1);
+            color: #EF4444;
+        }
+
+        /* ========== TOP NAVBAR ========== */
+        .top-nav {
+            position: fixed;
+            top: 0;
+            left: var(--sidebar-width);
+            right: 0;
+            height: var(--topbar-height);
+            background: linear-gradient(135deg, #0B1A33 0%, #1A3A5C 100%);
+            padding: 0 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1040;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        }
+
+        .top-nav-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .sidebar-toggle {
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.1);
+            font-size: 18px;
+            color: white;
+            cursor: pointer;
+            padding: 6px 10px;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .sidebar-toggle:hover {
+            background: rgba(255,255,255,0.15);
+        }
+
+        .top-nav-left h2 {
+            font-size: 18px;
+            font-weight: 600;
+            color: white;
+            margin: 0;
+            line-height: 1.2;
+        }
+
+        .top-nav-breadcrumb {
+            font-size: 12px;
+            color: rgba(255,255,255,0.5);
+            font-weight: 400;
+            display: block;
+            margin-top: 1px;
+        }
+
+        .top-nav-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .top-nav-search {
+            position: relative;
+            display: flex;
+            align-items: center;
+            background: rgba(255,255,255,0.1);
+            border-radius: 30px;
+            padding: 6px 16px 6px 14px;
+            border: 1px solid rgba(255,255,255,0.08);
+            transition: all 0.3s;
+            gap: 8px;
+            min-width: 220px;
+        }
+
+        .top-nav-search:focus-within {
+            background: rgba(255,255,255,0.18);
+            border-color: rgba(255,255,255,0.2);
+            box-shadow: 0 0 0 3px rgba(59,130,246,0.15);
+        }
+
+        .top-nav-search i {
+            color: rgba(255,255,255,0.5);
+            font-size: 14px;
+        }
+
+        .top-nav-search input {
+            border: none;
+            background: transparent;
+            padding: 4px 0;
+            font-size: 13px;
+            color: white;
+            outline: none;
+            width: 200px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .top-nav-search input::placeholder {
+            color: rgba(255,255,255,0.4);
+        }
+
+        .top-nav-search kbd {
+            background: rgba(255,255,255,0.08);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            color: rgba(255,255,255,0.4);
+            font-weight: 600;
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+
+        /* Search Dropdown */
+        .search-dropdown {
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 0;
+            right: 0;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+            border: 1px solid #E5E9F0;
+            max-height: 400px;
+            overflow-y: auto;
+            display: none;
+            z-index: 2000;
+            padding: 8px;
+        }
+
+        .search-dropdown.active {
+            display: block;
+        }
+
+        .search-dropdown .search-item {
+            padding: 10px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.15s;
+            color: #1E293B;
+        }
+
+        .search-dropdown .search-item:hover,
+        .search-dropdown .search-item.active {
+            background: #F1F5F9;
+        }
+
+        .search-dropdown .search-item i {
+            color: #94A3B8;
+            font-size: 16px;
+            width: 20px;
+        }
+
+        .search-dropdown .search-item .search-title {
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .search-dropdown .search-item .search-subtitle {
+            font-size: 12px;
+            color: #94A3B8;
+        }
+
+        .search-dropdown .search-item .search-highlight {
+            background: #FEF08A;
+            padding: 0 2px;
+            border-radius: 2px;
+        }
+
+        .search-dropdown .search-empty {
+            padding: 20px;
+            text-align: center;
+            color: #94A3B8;
+        }
+
+        .search-dropdown .search-empty i {
+            font-size: 32px;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .top-nav-notifications {
+            position: relative;
+            cursor: pointer;
+            padding: 6px 8px;
+            border-radius: 30px;
+            transition: background 0.2s;
+        }
+
+        .top-nav-notifications:hover {
+            background: rgba(255,255,255,0.08);
+        }
+
+        .top-nav-notifications i {
+            font-size: 20px;
+            color: rgba(255,255,255,0.7);
+        }
+
+        .notification-dot {
+            position: absolute;
+            top: 2px;
+            right: 4px;
+            background: #EF4444;
+            color: white;
+            font-size: 9px;
+            font-weight: 700;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #0B1A33;
+        }
+
+        .top-nav-user {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            padding: 4px 12px 4px 6px;
+            border-radius: 30px;
+            transition: background 0.2s;
+        }
+
+        .top-nav-user:hover {
+            background: rgba(255,255,255,0.08);
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .user-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .user-details {
+            line-height: 1.3;
+        }
+
+        .user-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: white;
+            display: block;
+        }
+
+        .user-role {
+            font-size: 11px;
+            color: rgba(255,255,255,0.5);
+            font-weight: 500;
+            text-transform: capitalize;
+        }
+
+        /* ========== MAIN CONTENT ========== */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            margin-top: var(--topbar-height);
+            padding: 28px 32px;
+            min-height: calc(100vh - var(--topbar-height));
+            background: #F0F2F5;
+        }
+
+        /* ========== STAT CARDS ========== */
+        .stat-card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px 20px;
+            border: 1px solid #E5E9F0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+            transition: all 0.25s ease;
+            height: 100%;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.06);
+            border-color: #CBD5E1;
+        }
+
+        .stat-card .stat-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .stat-card .stat-icon.blue { background: #DBEAFE; color: #2563EB; }
+        .stat-card .stat-icon.green { background: #DCFCE7; color: #16A34A; }
+        .stat-card .stat-icon.purple { background: #EDE9FE; color: #7C3AED; }
+        .stat-card .stat-icon.orange { background: #FEF3C7; color: #D97706; }
+
+        .stat-card .stat-number {
+            font-size: 28px;
+            font-weight: 700;
+            color: #0B1A33;
+            letter-spacing: -0.5px;
+        }
+
+        .stat-card .stat-label {
+            font-size: 13px;
+            color: #6B7A8F;
+            font-weight: 500;
+        }
+
+        /* ========== CARDS ========== */
+        .glass-card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px 28px;
+            border: 1px solid #E5E9F0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+            margin-bottom: 0;
+            height: 100%;
+        }
+
+        .glass-card .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #0B1A33;
+            margin-bottom: 16px;
+        }
+
+        /* ========== TABLES ========== */
+        .table-custom {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        .table-custom thead th {
+            background: #F8FAFC;
+            color: #475569;
+            font-weight: 600;
+            padding: 10px 12px;
+            border-bottom: 2px solid #E5E9F0;
+            text-align: left;
+        }
+
+        .table-custom tbody td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #F1F5F9;
+            color: #1E293B;
+        }
+
+        .table-custom tbody tr:hover {
+            background: #F8FAFC;
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @@media (max-width: 768px) {
+            :root {
+                --sidebar-width: 64px;
+                --topbar-height: 60px;
+            }
+            .sidebar-brand h3 { font-size: 16px; }
+            .sidebar-brand small { display: none; }
+            .sidebar-nav .nav-link span { display: none; }
+            .sidebar-nav .nav-link { justify-content: center; padding: 12px; }
+            .sidebar-nav .nav-link i { margin: 0; font-size: 18px; }
+            .top-nav { left: 64px; padding: 0 16px; }
+            .top-nav-breadcrumb { display: none; }
+            .top-nav-search input { width: 80px; }
+            .top-nav-search { padding: 4px 12px; min-width: auto; }
+            .top-nav-search kbd { display: none; }
+            .user-details { display: none; }
+            .top-nav-notifications { display: none; }
+            .main-content { margin-left: 64px; padding: 16px; }
+            .stat-card .stat-number { font-size: 20px; }
+            .search-dropdown { left: -100px; right: -100px; }
+        }
+
+        /* ========== SCROLLBAR ========== */
+        .sidebar::-webkit-scrollbar { width: 4px; }
+        .sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 10px; }
+        .sidebar::-webkit-scrollbar-track { background: transparent; }
+        .search-dropdown::-webkit-scrollbar { width: 4px; }
+        .search-dropdown::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 10px; }
+        .search-dropdown::-webkit-scrollbar-track { background: transparent; }
+    </style>
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">ZenithPM.Web</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
+    @if (User.Identity.IsAuthenticated)
+    {
+        <partial name="_DashboardSidebar" />
+        
+        <div class="top-nav">
+            <div class="top-nav-left">
+                <button class="sidebar-toggle" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
+                <div>
+                    <h2>@ViewData["Title"]</h2>
+                    <span class="top-nav-breadcrumb">@ViewData["SubTitle"]</span>
                 </div>
             </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
-
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - ZenithPM.Web - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            <div class="top-nav-right">
+                <div class="top-nav-search">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search anything..." id="globalSearch" autocomplete="off" />
+                    <kbd>Ctrl+K</kbd>
+                    <div class="search-dropdown" id="searchDropdown"></div>
+                </div>
+                <div class="top-nav-notifications">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-dot">3</span>
+                </div>
+                <div class="top-nav-user">
+                    <div class="user-avatar">
+                        <img src="https://ui-avatars.com/api/?name=@userName&background=3B82F6&color=fff&size=32" alt="User" />
+                    </div>
+                    <div class="user-details">
+                        <span class="user-name">@userName</span>
+                        <span class="user-role">@userRole</span>
+                    </div>
+                </div>
+            </div>
         </div>
-    </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+
+        <div class="main-content" id="mainContent">
+            @RenderBody()
+        </div>
+    }
+    else
+    {
+        @RenderBody()
+    }
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            const mainContent = document.querySelector('.main-content');
+            const topNav = document.querySelector('.top-nav');
+            
+            sidebar.classList.toggle('collapsed');
+            mainContent.classList.toggle('collapsed');
+            topNav.classList.toggle('collapsed');
+        }
+
+        // ========== REAL SEARCH ENGINE ==========
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('globalSearch');
+            const dropdown = document.getElementById('searchDropdown');
+            if (!searchInput || !dropdown) return;
+
+            let allItems = [];
+            let selectedIndex = -1;
+
+            function collectData() {
+                const items = [];
+                const mainContent = document.getElementById('mainContent');
+                if (!mainContent) return items;
+
+                document.querySelectorAll('table tbody tr').forEach(row => {
+                    const cells = row.querySelectorAll('td');
+                    if (cells.length > 0) {
+                        const text = row.textContent.trim();
+                        const firstCell = cells[0]?.textContent.trim() || '';
+                        items.push({
+                            element: row,
+                            text: text,
+                            title: firstCell,
+                            subtitle: text.replace(firstCell, '').trim() || 'Table row',
+                            type: 'table',
+                            score: 0
+                        });
+                    }
+                });
+
+                document.querySelectorAll('.stat-card').forEach(card => {
+                    const label = card.querySelector('.stat-label')?.textContent || '';
+                    const number = card.querySelector('.stat-number')?.textContent || '';
+                    if (label || number) {
+                        items.push({
+                            element: card,
+                            text: label + ' ' + number,
+                            title: label || 'Stat',
+                            subtitle: number || '',
+                            type: 'stat',
+                            score: 0
+                        });
+                    }
+                });
+
+                return items;
+            }
+
+            allItems = collectData();
+
+            function search(query) {
+                const q = query.toLowerCase().trim();
+                if (q === '') {
+                    dropdown.classList.remove('active');
+                    return [];
+                }
+
+                const results = [];
+                allItems.forEach(item => {
+                    const text = item.text.toLowerCase();
+                    if (text.includes(q)) {
+                        const index = text.indexOf(q);
+                        const start = Math.max(0, index - 20);
+                        const end = Math.min(text.length, index + q.length + 30);
+                        const snippet = (start > 0 ? '...' : '') + 
+                                       item.text.substring(start, end) + 
+                                       (end < text.length ? '...' : '');
+                        results.push({
+                            ...item,
+                            score: text.indexOf(q),
+                            snippet: snippet,
+                            matched: true
+                        });
+                    }
+                });
+
+                results.sort((a, b) => a.score - b.score);
+                return results;
+            }
+
+            function renderResults(results) {
+                dropdown.innerHTML = '';
+                selectedIndex = -1;
+
+                if (results.length === 0) {
+                    dropdown.innerHTML = `
+                        <div class="search-empty">
+                            <i class="fas fa-search"></i>
+                            <div>No results found</div>
+                            <small>Try different keywords</small>
+                        </div>
+                    `;
+                    dropdown.classList.add('active');
+                    return;
+                }
+
+                results.forEach((item, index) => {
+                    const div = document.createElement('div');
+                    div.className = 'search-item';
+                    div.dataset.index = index;
+                    
+                    const icon = item.type === 'stat' ? 'fa-chart-simple' : 'fa-table';
+                    
+                    let displayTitle = item.title;
+                    const q = searchInput.value.trim().toLowerCase();
+                    if (q && displayTitle.toLowerCase().includes(q)) {
+                        const regex = new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+                        displayTitle = displayTitle.replace(regex, '<span class="search-highlight">$1</span>');
+                    }
+
+                    div.innerHTML = `
+                        <i class="fas ${icon}"></i>
+                        <div>
+                            <div class="search-title">${displayTitle}</div>
+                            <div class="search-subtitle">${item.subtitle}</div>
+                        </div>
+                    `;
+
+                    div.addEventListener('click', function() {
+                        item.element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        item.element.style.background = '#DBEAFE';
+                        setTimeout(() => {
+                            item.element.style.background = '';
+                        }, 2000);
+                        dropdown.classList.remove('active');
+                        searchInput.value = '';
+                    });
+
+                    div.addEventListener('mouseenter', function() {
+                        selectedIndex = parseInt(this.dataset.index);
+                        document.querySelectorAll('.search-item').forEach(el => el.classList.remove('active'));
+                        this.classList.add('active');
+                    });
+
+                    dropdown.appendChild(div);
+                });
+
+                dropdown.classList.add('active');
+            }
+
+            searchInput.addEventListener('input', function() {
+                const query = this.value.trim();
+                if (query === '') {
+                    dropdown.classList.remove('active');
+                    return;
+                }
+                const results = search(query);
+                renderResults(results);
+            });
+
+            searchInput.addEventListener('keydown', function(e) {
+                const items = dropdown.querySelectorAll('.search-item');
+                if (items.length === 0) return;
+
+                if (e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    selectedIndex = Math.min(selectedIndex + 1, items.length - 1);
+                    updateActiveItem(items);
+                } else if (e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    selectedIndex = Math.max(selectedIndex - 1, 0);
+                    updateActiveItem(items);
+                } else if (e.key === 'Enter') {
+                    e.preventDefault();
+                    if (selectedIndex >= 0 && items[selectedIndex]) {
+                        items[selectedIndex].click();
+                    }
+                } else if (e.key === 'Escape') {
+                    dropdown.classList.remove('active');
+                    searchInput.blur();
+                }
+            });
+
+            function updateActiveItem(items) {
+                items.forEach((el, i) => {
+                    el.classList.toggle('active', i === selectedIndex);
+                });
+                if (selectedIndex >= 0 && items[selectedIndex]) {
+                    items[selectedIndex].scrollIntoView({ block: 'nearest' });
+                }
+            }
+
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('.top-nav-search')) {
+                    dropdown.classList.remove('active');
+                }
+            });
+
+            const observer = new MutationObserver(function() {
+                allItems = collectData();
+            });
+            observer.observe(document.getElementById('mainContent'), { childList: true, subtree: true });
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                e.preventDefault();
+                const searchInput = document.getElementById('globalSearch');
+                if (searchInput) {
+                    searchInput.focus();
+                    searchInput.select();
+                }
+            }
+        });
+    </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

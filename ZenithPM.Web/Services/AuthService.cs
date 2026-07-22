@@ -5,6 +5,11 @@ using ZenithPM.Web.Models.ViewModels;
 using BCrypt.Net;
 using OtpNet;
 using System.Security.Cryptography;
+using System.Threading.Tasks;
+
+// Alias lagana zaroori hai taake Task class aur Async Task mein farq rahe
+using Task = System.Threading.Tasks.Task;
+using TaskEntity = ZenithPM.Web.Models.Entities.Task;
 
 namespace ZenithPM.Web.Services
 {

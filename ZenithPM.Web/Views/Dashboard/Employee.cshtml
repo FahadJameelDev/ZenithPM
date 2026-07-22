@@ -1,0 +1,260 @@
+﻿@model ZenithPM.Web.Models.ViewModels.EmployeeDashboardViewModel
+@{
+    ViewData["Title"] = "Employee Dashboard";
+   
+    Layout = "_Layout";
+}
+
+<!-- Page Header -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h3 fw-bold text-dark mb-1">
+            <i class="fas fa-user-check text-primary me-2"></i>Employee Dashboard
+        </h1>
+        <p class="text-muted small mb-0">Track your daily assignments, tasks, and attendance status.</p>
+    </div>
+    <div>
+        <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill">
+            <i class="fas fa-calendar-alt me-1"></i> @DateTime.Now.ToString("dd MMM yyyy")
+        </span>
+    </div>
+</div>
+
+<!-- Stat Cards -->
+<div class="row g-4 mb-4">
+    <div class="col-xl-4 col-lg-6 col-md-6">
+        <div class="stat-card">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <span class="stat-label">My Tasks</span>
+                    <h2 class="stat-number mt-1">@Model.MyTasks.Count</h2>
+                </div>
+                <div class="stat-icon blue">
+                    <i class="fas fa-clipboard-list"></i>
+                </div>
+            </div>
+            <div class="mt-2">
+                <span class="badge bg-light text-dark border px-2 py-1 rounded-pill">
+                    <i class="fas fa-tasks me-1"></i>Total assigned
+                </span>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-4 col-lg-6 col-md-6">
+        <div class="stat-card">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <span class="stat-label">Pending</span>
+                    <h2 class="stat-number mt-1">@Model.PendingTasks</h2>
+                </div>
+                <div class="stat-icon orange">
+                    <i class="fas fa-hourglass-half"></i>
+                </div>
+            </div>
+            <div class="mt-2">
+                <span class="badge bg-warning bg-opacity-10 text-warning">
+                    <i class="fas fa-exclamation-circle me-1"></i>Needs attention
+                </span>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-4 col-lg-6 col-md-6">
+        <div class="stat-card">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <span class="stat-label">Completed</span>
+                    <h2 class="stat-number mt-1">@Model.CompletedTasks</h2>
+                </div>
+                <div class="stat-icon green">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+            </div>
+            <div class="mt-2">
+                <span class="badge bg-success bg-opacity-10 text-success">
+                    <i class="fas fa-check me-1"></i>Well done!
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Attendance + My Tasks -->
+<div class="row g-4">
+    <div class="col-lg-5">
+        <div class="glass-card">
+            <h5 class="card-title mb-3">
+                <i class="fas fa-fingerprint text-primary me-2"></i>Today's Attendance
+            </h5>
+            <div class="p-4 bg-light rounded-4 border border-light">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <span class="text-muted small text-uppercase">Status</span>
+                    <span class="badge @(Model.TodayAttendance.Status == "Present" ? "bg-success" : "bg-secondary") px-3 py-2 rounded-pill">
+                        <i class="fas @(Model.TodayAttendance.Status == "Present" ? "fa-check-circle" : "fa-clock") me-1"></i>
+                        @Model.TodayAttendance.Status
+                    </span>
+                </div>
+                @if (Model.TodayAttendance.CheckIn.HasValue)
+                {
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <span class="text-muted small"><i class="fas fa-sign-in-alt text-success me-1"></i>Check-In</span>
+                        <span class="fw-semibold">@Model.TodayAttendance.CheckIn.Value.ToString("hh:mm tt")</span>
+                    </div>
+                }
+                @if (Model.TodayAttendance.CheckOut.HasValue)
+                {
+                    <div class="d-flex align-items-center justify-content-between">
+                        <span class="text-muted small"><i class="fas fa-sign-out-alt text-danger me-1"></i>Check-Out</span>
+                        <span class="fw-semibold">@Model.TodayAttendance.CheckOut.Value.ToString("hh:mm tt")</span>
+                    </div>
+                }
+                @if (!Model.TodayAttendance.CheckIn.HasValue && !Model.TodayAttendance.CheckOut.HasValue)
+                {
+                    <div class="text-center py-2">
+                        <i class="fas fa-calendar-times text-muted fa-2x mb-2 d-block"></i>
+                        <span class="text-muted small">No attendance marked today</span>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-7">
+        <div class="glass-card">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-tasks text-info me-2"></i>My Tasks
+                </h5>
+                <span class="badge bg-light text-dark border px-2 py-1 rounded-pill">@Model.MyTasks.Count total</span>
+            </div>
+            <div class="table-responsive">
+                <table class="table-custom">
+                    <thead>
+                        <tr>
+                            <th>Task Title</th>
+                            <th class="text-end">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var task in Model.MyTasks)
+                        {
+                            var statusColor = task.Status switch
+                            {
+                                "Completed" => "success",
+                                "Pending" => "warning",
+                                "InProgress" => "primary",
+                                _ => "secondary"
+                            };
+                            <tr>
+                                <td>
+                                    <span class="fw-semibold">@task.Title</span>
+                                </td>
+                                <td class="text-end">
+                                    <span class="badge bg-@statusColor bg-opacity-10 text-@statusColor px-3 py-1 rounded-pill">
+                                        @task.Status
+                                    </span>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="row g-3 mt-2">
+    <div class="col-12">
+        <div class="glass-card d-flex flex-wrap gap-3 align-items-center justify-content-between">
+            <div class="d-flex align-items-center gap-3">
+                <i class="fas fa-bolt text-primary fs-4"></i>
+                <span class="fw-semibold text-dark">Quick Actions</span>
+            </div>
+            <div class="d-flex flex-wrap gap-2">
+                <a href="/Attendance/Mark" class="btn btn-primary btn-sm rounded-pill px-4">
+                    <i class="fas fa-fingerprint me-1"></i>Mark Attendance
+                </a>
+                <a href="/Task/MyTasks" class="btn btn-outline-primary btn-sm rounded-pill px-4">
+                    <i class="fas fa-list me-1"></i>View All Tasks
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .stat-card {
+        background: white;
+        border-radius: 16px;
+        padding: 24px 20px;
+        border: 1px solid #E5E9F0;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+        transition: all 0.25s ease;
+        height: 100%;
+    }
+    .stat-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 30px rgba(0,0,0,0.06);
+        border-color: #CBD5E1;
+    }
+    .stat-card .stat-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        flex-shrink: 0;
+    }
+    .stat-card .stat-icon.blue { background: #DBEAFE; color: #2563EB; }
+    .stat-card .stat-icon.green { background: #DCFCE7; color: #16A34A; }
+    .stat-card .stat-icon.purple { background: #EDE9FE; color: #7C3AED; }
+    .stat-card .stat-icon.orange { background: #FEF3C7; color: #D97706; }
+    .stat-card .stat-number {
+        font-size: 28px;
+        font-weight: 700;
+        color: #0B1A33;
+        letter-spacing: -0.5px;
+    }
+    .stat-card .stat-label {
+        font-size: 13px;
+        color: #6B7A8F;
+        font-weight: 500;
+    }
+    .glass-card {
+        background: white;
+        border-radius: 16px;
+        padding: 24px 28px;
+        border: 1px solid #E5E9F0;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+        margin-bottom: 0;
+        height: 100%;
+    }
+    .glass-card .card-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: #0B1A33;
+        margin-bottom: 16px;
+    }
+    .table-custom {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+    }
+    .table-custom thead th {
+        background: #F8FAFC;
+        color: #475569;
+        font-weight: 600;
+        padding: 10px 12px;
+        border-bottom: 2px solid #E5E9F0;
+        text-align: left;
+    }
+    .table-custom tbody td {
+        padding: 10px 12px;
+        border-bottom: 1px solid #F1F5F9;
+        color: #1E293B;
+    }
+    .table-custom tbody tr:hover {
+        background: #F8FAFC;
+    }
+</style>

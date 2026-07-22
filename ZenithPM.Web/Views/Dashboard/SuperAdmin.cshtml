@@ -1,0 +1,201 @@
+﻿@model ZenithPM.Web.Models.ViewModels.SuperAdminDashboardViewModel
+@{
+    ViewData["Title"] = "Super Admin Dashboard";
+   
+    Layout = "_Layout";
+}
+
+<!-- Page Header -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h3 fw-bold text-dark mb-1">
+            <i class="fas fa-crown text-warning me-2"></i>Super Admin Dashboard
+        </h1>
+        <p class="text-muted small mb-0">System-wide overview, metrics, and administration.</p>
+    </div>
+    <div>
+        <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill">
+            <i class="fas fa-calendar-alt me-1"></i> @DateTime.Now.ToString("dd MMM yyyy")
+        </span>
+    </div>
+</div>
+
+<!-- Stat Cards -->
+<div class="row g-4 mb-4">
+    <div class="col-xl-3 col-lg-6 col-md-6">
+        <div class="stat-card">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <span class="stat-label">Total Users</span>
+                    <h2 class="stat-number mt-1">@Model.TotalUsers</h2>
+                </div>
+                <div class="stat-icon blue">
+                    <i class="fas fa-users"></i>
+                </div>
+            </div>
+            <div class="mt-2">
+                <span class="badge bg-success bg-opacity-10 text-success">
+                    <i class="fas fa-arrow-up me-1"></i>+12%
+                </span>
+                <span class="text-muted small ms-1">vs last month</span>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-lg-6 col-md-6">
+        <div class="stat-card">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <span class="stat-label">Total Projects</span>
+                    <h2 class="stat-number mt-1">@Model.TotalProjects</h2>
+                </div>
+                <div class="stat-icon green">
+                    <i class="fas fa-project-diagram"></i>
+                </div>
+            </div>
+            <div class="mt-2">
+                <span class="badge bg-success bg-opacity-10 text-success">
+                    <i class="fas fa-arrow-up me-1"></i>+8%
+                </span>
+                <span class="text-muted small ms-1">vs last month</span>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-lg-6 col-md-6">
+        <div class="stat-card">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <span class="stat-label">Total Tasks</span>
+                    <h2 class="stat-number mt-1">@Model.TotalTasks</h2>
+                </div>
+                <div class="stat-icon purple">
+                    <i class="fas fa-tasks"></i>
+                </div>
+            </div>
+            <div class="mt-2">
+                <span class="badge bg-warning bg-opacity-10 text-warning">
+                    <i class="fas fa-arrow-down me-1"></i>-3%
+                </span>
+                <span class="text-muted small ms-1">vs last month</span>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-lg-6 col-md-6">
+        <div class="stat-card">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <span class="stat-label">Departments</span>
+                    <h2 class="stat-number mt-1">@Model.TotalDepartments</h2>
+                </div>
+                <div class="stat-icon orange">
+                    <i class="fas fa-building"></i>
+                </div>
+            </div>
+            <div class="mt-2">
+                <span class="badge bg-secondary bg-opacity-10 text-secondary">
+                    <i class="fas fa-minus me-1"></i>0%
+                </span>
+                <span class="text-muted small ms-1">vs last month</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Activities + System Stats -->
+<div class="row g-4">
+    <div class="col-lg-7">
+        <div class="glass-card">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-clock text-primary me-2"></i>Recent Activities
+                </h5>
+                <a href="#" class="text-primary text-decoration-none small fw-semibold">View All</a>
+            </div>
+            <div class="table-responsive">
+                <table class="table-custom">
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>Action</th>
+                            <th class="text-end">Time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var activity in Model.RecentActivities)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center" style="width:32px;height:32px;">
+                                            <i class="fas fa-user-sm fa-xs"></i>
+                                        </div>
+                                        <span class="fw-semibold">@activity.User</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="badge bg-light text-dark border px-2 py-1 rounded-pill">@activity.Action</span>
+                                </td>
+                                <td class="text-end text-muted small">@activity.Timestamp.ToString("MMM dd, hh:mm tt")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-5">
+        <div class="glass-card" style="background: linear-gradient(145deg, #0B1A33, #142A4A); border-color: rgba(255,255,255,0.06);">
+            <h5 class="card-title text-white mb-3">
+                <i class="fas fa-chart-line text-primary me-2"></i>System Stats
+            </h5>
+            <div class="row g-3">
+                <div class="col-6">
+                    <div class="bg-white bg-opacity-10 rounded-3 p-3">
+                        <span class="text-white-50 small text-uppercase d-block mb-1">Revenue</span>
+                        <span class="text-success fw-bold fs-4">@Model.SystemStats.Revenue.ToString("C")</span>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="bg-white bg-opacity-10 rounded-3 p-3">
+                        <span class="text-white-50 small text-uppercase d-block mb-1">Period</span>
+                        <span class="text-white fw-bold fs-4">@Model.SystemStats.Period</span>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="bg-white bg-opacity-10 rounded-3 p-3">
+                        <span class="text-white-50 small text-uppercase d-block mb-1">Active Users</span>
+                        <span class="text-white fw-bold fs-4">@Model.SystemStats.ActiveUsers</span>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="bg-white bg-opacity-10 rounded-3 p-3">
+                        <span class="text-white-50 small text-uppercase d-block mb-1">Total Projects</span>
+                        <span class="text-info fw-bold fs-4">@Model.SystemStats.TotalProjects</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="row g-3 mt-2">
+    <div class="col-12">
+        <div class="glass-card d-flex flex-wrap gap-3 align-items-center justify-content-between">
+            <div class="d-flex align-items-center gap-3">
+                <i class="fas fa-bolt text-primary fs-4"></i>
+                <span class="fw-semibold text-dark">Quick Actions</span>
+            </div>
+            <div class="d-flex flex-wrap gap-2">
+                <a href="/Admin/Index" class="btn btn-primary btn-sm rounded-pill px-4">
+                    <i class="fas fa-users-cog me-1"></i>User Management
+                </a>
+                <a href="/Project/Create" class="btn btn-outline-primary btn-sm rounded-pill px-4">
+                    <i class="fas fa-plus me-1"></i>Create Project
+                </a>
+                <a href="/Department/Index" class="btn btn-outline-secondary btn-sm rounded-pill px-4">
+                    <i class="fas fa-building me-1"></i>Departments
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

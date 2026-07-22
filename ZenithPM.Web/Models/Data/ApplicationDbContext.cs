@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+// Hum ne 'Task' ko explicitly handle karne ke liye namespace alias use kiya hai
+using TaskEntity = ZenithPM.Web.Models.Entities.Task;
 using ZenithPM.Web.Models.Entities;
 
 namespace ZenithPM.Web.Data
@@ -10,35 +12,61 @@ namespace ZenithPM.Web.Data
         {
         }
 
+        // Authentication & Security
         public DbSet<User> Users { get; set; }
+        public DbSet<Role> Roles { get; set; }
+        public DbSet<Permission> Permissions { get; set; }
+        public DbSet<RolePermission> RolePermissions { get; set; }
         public DbSet<SecurityLog> SecurityLogs { get; set; }
+
+        // Enterprise Modules
+        public DbSet<Project> Projects { get; set; }
+
+        // Yahan humne alias 'TaskEntity' use kiya hai taake compiler confuse na ho
+        public DbSet<TaskEntity> Tasks { get; set; }
+
+        public DbSet<Department> Departments { get; set; }
+        public DbSet<Attendance> Attendances { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<User>(entity =>
+            // --- Authentication & Security Entities ---
+
+            // --- Enterprise Module Entities ---
+
+            modelBuilder.Entity<Project>(entity =>
             {
-                entity.HasKey(u => u.Id);
-                entity.HasIndex(u => u.Email).IsUnique();
-                entity.Property(u => u.Email).IsRequired().HasMaxLength(256);
-                entity.Property(u => u.PasswordHash).IsRequired();
-                entity.Property(u => u.FirstName).IsRequired().HasMaxLength(100);
-                entity.Property(u => u.LastName).IsRequired().HasMaxLength(100);
-                entity.Property(u => u.MfaSecretKey).HasMaxLength(256);
+                entity.HasKey(p => p.Id);
+
+                // Added precision for Budget decimal property to resolve SQL warning/mapping
+                entity.Property(p => p.Budget)
+                      .HasPrecision(18, 2);
+
+                entity.HasOne(p => p.Department).WithMany(d => d.Projects).HasForeignKey(p => p.DepartmentId).OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(p => p.Manager).WithMany().HasForeignKey(p => p.ManagerId).OnDelete(DeleteBehavior.Restrict);
             });
 
-            modelBuilder.Entity<SecurityLog>(entity =>
+            // Yahan TaskEntity use hoga
+            modelBuilder.Entity<TaskEntity>(entity =>
             {
-                entity.HasKey(s => s.Id);
-                entity.Property(s => s.ActionType).IsRequired().HasMaxLength(50);
-                entity.Property(s => s.IpAddress).IsRequired().HasMaxLength(50);
-                entity.Property(s => s.UserAgent).HasMaxLength(500);
+                entity.HasKey(t => t.Id);
+                entity.HasOne(t => t.Project).WithMany(p => p.Tasks).HasForeignKey(t => t.ProjectId).OnDelete(DeleteBehavior.Cascade);
+                entity.HasOne(t => t.AssignedTo).WithMany().HasForeignKey(t => t.AssignedToId).OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(t => t.AssignedBy).WithMany().HasForeignKey(t => t.AssignedById).OnDelete(DeleteBehavior.Restrict);
+            });
 
-                entity.HasOne(s => s.User)
-                      .WithMany(u => u.SecurityLogs)
-                      .HasForeignKey(s => s.UserId)
-                      .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<Department>(entity =>
+            {
+                entity.HasKey(d => d.Id);
+                entity.HasOne(d => d.Manager).WithMany().HasForeignKey(d => d.ManagerId).OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<Attendance>(entity =>
+            {
+                entity.HasKey(a => a.Id);
+                entity.HasOne(a => a.User).WithMany().HasForeignKey(a => a.UserId).OnDelete(DeleteBehavior.Cascade);
             });
         }
     }

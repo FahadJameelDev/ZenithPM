@@ -1,17 +1,25 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Mvc;
 using ZenithPM.Web.Data;
-using ZenithPM.Web.Services; // Service Layer
+using ZenithPM.Web.Services;
+using ZenithPM.Web.Security.Authentication;
+using ZenithPM.Web.Security.Claims;
+using ZenithPM.Web.Security.Gateway;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddControllersWithViews();
+// 1. MVC with Global Antiforgery Protection
+builder.Services.AddControllersWithViews(options =>
+{
+    options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
+});
 
-// Database Context Registration
+// Database Context
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Session Services (for MFA, TempData, etc.)
+// Session Services
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
@@ -20,15 +28,27 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
-// ***** CUSTOM SERVICE REGISTRATIONS *****
-// Register Auth Service (Business Logic Layer)
-builder.Services.AddScoped<IAuthService, AuthService>();
-// Register HttpContextAccessor (for Session & Request handling in Services)
+// Authentication Services
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Auth/Login";
+        options.AccessDeniedPath = "/Auth/AccessDenied";
+        options.ExpireTimeSpan = TimeSpan.FromDays(7);
+        options.SlidingExpiration = true;
+    });
+
+// Custom Service Registrations
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IAuthCookieManager, AuthCookieManager>();
+builder.Services.AddScoped<IClaimsFactory, ClaimsFactory>();
+builder.Services.AddScoped<IIdentityGateway, IdentityGateway>();
+builder.Services.AddScoped<IDashboardService, DashboardService>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Pipeline Configuration
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -37,11 +57,12 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+
 app.UseRouting();
 
-// Use Session Middleware
+// CORRECTED MIDDLEWARE ORDER: Authentication must come BEFORE Session & Authorization
+app.UseAuthentication();
 app.UseSession();
-
 app.UseAuthorization();
 
 app.MapControllerRoute(
