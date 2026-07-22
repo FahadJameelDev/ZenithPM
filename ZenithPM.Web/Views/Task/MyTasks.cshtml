@@ -1,0 +1,65 @@
+﻿@model List<ZenithPM.Web.Models.Entities.Task>
+@{
+    ViewData["Title"] = "My Tasks";
+    ViewData["SubTitle"] = "Your assigned tasks";
+    Layout = "_Layout";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h3 fw-bold text-dark mb-1">My Tasks</h1>
+        <p class="text-muted small mb-0">Your assigned tasks</p>
+    </div>
+</div>
+
+<div class="glass-card">
+    <div class="table-responsive">
+        <table class="table-custom">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Project</th>
+                    <th>Status</th>
+                    <th>Priority</th>
+                    <th>Due Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var task in Model)
+                {
+                    var statusColor = task.Status switch
+                    {
+                        "Completed" => "success",
+                        "InProgress" => "primary",
+                        "Pending" => "warning",
+                        "Blocked" => "danger",
+                        _ => "secondary"
+                    };
+                    <tr>
+                        <td><span class="fw-semibold">@task.Title</span></td>
+                        <td>@(task.Project?.Name ?? "N/A")</td>
+                        <td>
+                            <span class="badge bg-@statusColor bg-opacity-10 text-@statusColor px-3 py-1 rounded-pill">
+                                @(task.Status ?? "Pending")
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge bg-light text-dark border px-3 py-1 rounded-pill">
+                                @(task.Priority ?? "Medium")
+                            </span>
+                        </td>
+                        <td>@task.DueDate.ToString("MMM dd, yyyy")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<style>
+    .glass-card { background: white; border-radius: 16px; padding: 24px 28px; border: 1px solid #E5E9F0; box-shadow: 0 1px 3px rgba(0,0,0,0.03); }
+    .table-custom { width: 100%; border-collapse: collapse; font-size: 14px; }
+    .table-custom thead th { background: #F8FAFC; color: #475569; font-weight: 600; padding: 10px 12px; border-bottom: 2px solid #E5E9F0; text-align: left; }
+    .table-custom tbody td { padding: 10px 12px; border-bottom: 1px solid #F1F5F9; color: #1E293B; }
+    .table-custom tbody tr:hover { background: #F8FAFC; }
+</style>

@@ -1,0 +1,98 @@
+﻿@model List<ZenithPM.Web.Models.Entities.Attendance>
+@{
+    ViewData["Title"] = "Attendance";
+    ViewData["SubTitle"] = "View all attendance records";
+    Layout = "_Layout";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h3 fw-bold text-dark mb-1">Attendance</h1>
+        <p class="text-muted small mb-0">View all attendance records</p>
+    </div>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show">
+        @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="glass-card">
+    <div class="table-responsive">
+        <table class="table-custom">
+            <thead>
+                <tr>
+                    <th>Employee</th>
+                    <th>Date</th>
+                    <th>Check In</th>
+                    <th>Check Out</th>
+                    <th>Status</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var record in Model)
+                {
+                    var statusColor = record.Status switch
+                    {
+                        "Present" => "success",
+                        "Absent" => "danger",
+                        "Leave" => "warning",
+                        "Late" => "info",
+                        _ => "secondary"
+                    };
+                    <tr>
+                        <td><span class="fw-semibold">@(record.User?.FirstName ?? "Unknown")</span></td>
+                        <td>@record.Date.ToString("MMM dd, yyyy")</td>
+                        <td>@(record.CheckIn?.ToString("hh:mm tt") ?? "N/A")</td>
+                        <td>@(record.CheckOut?.ToString("hh:mm tt") ?? "N/A")</td>
+                        <td>
+                            <span class="badge bg-@statusColor bg-opacity-10 text-@statusColor px-3 py-1 rounded-pill">
+                                @(record.Status ?? "Not Marked")
+                            </span>
+                        </td>
+                        <td class="text-end">
+                            <a href="@Url.Action("Edit", new { id = record.Id })" class="btn btn-sm btn-outline-primary rounded-pill px-3">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<style>
+    .glass-card {
+        background: white;
+        border-radius: 16px;
+        padding: 24px 28px;
+        border: 1px solid #E5E9F0;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+    .table-custom {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+    }
+    .table-custom thead th {
+        background: #F8FAFC;
+        color: #475569;
+        font-weight: 600;
+        padding: 10px 12px;
+        border-bottom: 2px solid #E5E9F0;
+        text-align: left;
+    }
+    .table-custom tbody td {
+        padding: 10px 12px;
+        border-bottom: 1px solid #F1F5F9;
+        color: #1E293B;
+    }
+    .table-custom tbody tr:hover {
+        background: #F8FAFC;
+    }
+</style>

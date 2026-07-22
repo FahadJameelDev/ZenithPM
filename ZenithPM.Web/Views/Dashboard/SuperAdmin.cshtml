@@ -151,7 +151,7 @@
                 <div class="col-6">
                     <div class="bg-white bg-opacity-10 rounded-3 p-3">
                         <span class="text-white-50 small text-uppercase d-block mb-1">Revenue</span>
-                        <span class="text-success fw-bold fs-4">@Model.SystemStats.Revenue.ToString("C")</span>
+                        <span class="text-success fw-bold text-nowrap" style="font-size: 1.1rem;">@Model.SystemStats.Revenue.ToString("C0")</span>
                     </div>
                 </div>
                 <div class="col-6">
@@ -168,8 +168,8 @@
                 </div>
                 <div class="col-6">
                     <div class="bg-white bg-opacity-10 rounded-3 p-3">
-                        <span class="text-white-50 small text-uppercase d-block mb-1">Total Projects</span>
-                        <span class="text-info fw-bold fs-4">@Model.SystemStats.TotalProjects</span>
+                        <span class="text-white-50 small text-uppercase d-block mb-1">Revenue</span>
+                        <span class="text-success fw-bold" style="font-size: 1.35rem;">@Model.SystemStats.Revenue.ToString("C0")</span>
                     </div>
                 </div>
             </div>

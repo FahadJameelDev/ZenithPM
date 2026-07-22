@@ -1,0 +1,112 @@
+﻿@model ZenithPM.Web.Models.Entities.Project
+@{
+    ViewData["Title"] = "Edit Project";
+    ViewData["SubTitle"] = "Update project details";
+    Layout = "_Layout";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h3 fw-bold text-dark mb-1">Edit Project</h1>
+        <p class="text-muted small mb-0">Update project details</p>
+    </div>
+    <a href="@Url.Action("Index")" class="btn btn-outline-secondary rounded-pill px-4">
+        <i class="fas fa-arrow-left me-1"></i> Back
+    </a>
+</div>
+
+<div class="glass-card">
+    <form asp-action="Edit" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="OrganizationId" />
+        <input type="hidden" asp-for="CreatedAt" />
+
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label class="form-label">Project Name</label>
+                <input asp-for="Name" class="form-control" placeholder="Enter project name" required />
+                <span asp-validation-for="Name" class="text-danger small"></span>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Client Name</label>
+                <input asp-for="ClientName" class="form-control" placeholder="Enter client name" />
+            </div>
+            <div class="col-12">
+                <label class="form-label">Description</label>
+                <textarea asp-for="Description" class="form-control" rows="3" placeholder="Enter project description"></textarea>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Status</label>
+                <select asp-for="Status" class="form-control">
+                    <option value="NotStarted">Not Started</option>
+                    <option value="InProgress">In Progress</option>
+                    <option value="Completed">Completed</option>
+                    <option value="OnHold">On Hold</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Priority</label>
+                <select asp-for="Priority" class="form-control">
+                    <option value="Low">Low</option>
+                    <option value="Medium">Medium</option>
+                    <option value="High">High</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Budget</label>
+                <input asp-for="Budget" class="form-control" placeholder="0.00" type="number" step="0.01" />
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Start Date</label>
+                <input asp-for="StartDate" class="form-control" type="date" required />
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">End Date</label>
+                <input asp-for="EndDate" class="form-control" type="date" />
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Manager</label>
+                <select asp-for="ManagerId" class="form-control" asp-items="ViewBag.Managers">
+                    <option value="">Select Manager</option>
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Department</label>
+                <select asp-for="DepartmentId" class="form-control" asp-items="ViewBag.Departments">
+                    <option value="">Select Department</option>
+                </select>
+            </div>
+            <div class="col-12">
+                <button type="submit" class="btn btn-primary rounded-pill px-5">
+                    <i class="fas fa-save me-1"></i> Update Project
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<style>
+    .glass-card {
+        background: white;
+        border-radius: 16px;
+        padding: 28px;
+        border: 1px solid #E5E9F0;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+    .form-control {
+        border-radius: 10px;
+        padding: 10px 14px;
+        border: 1px solid #E5E9F0;
+        font-size: 14px;
+    }
+    .form-control:focus {
+        border-color: #3B82F6;
+        box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
+    }
+    .form-label {
+        font-size: 13px;
+        font-weight: 600;
+        color: #0B1A33;
+    }
+</style>

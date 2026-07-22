@@ -45,6 +45,9 @@ builder.Services.AddScoped<IAuthCookieManager, AuthCookieManager>();
 builder.Services.AddScoped<IClaimsFactory, ClaimsFactory>();
 builder.Services.AddScoped<IIdentityGateway, IdentityGateway>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
+builder.Services.AddScoped<IProjectService, ProjectService>();
+builder.Services.AddScoped<ITaskService, TaskService>();
+builder.Services.AddScoped<IAttendanceService, AttendanceService>();
 
 var app = builder.Build();
 

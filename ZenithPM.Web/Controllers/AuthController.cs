@@ -106,6 +106,10 @@ namespace ZenithPM.Web.Controllers
             return Redirect(_identityGateway.GetRedirectUrl(role.Name));
         }
 
+        // GET: Auth/ForgotPassword
+        [HttpGet]
+        public IActionResult ForgotPassword() => View();
+
         // Add Anti-Forgery for all sensitive POST actions
         [HttpPost]
         [ValidateAntiForgeryToken]
